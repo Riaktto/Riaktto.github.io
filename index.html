@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Visa Maroc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        header {
+            background: #0078D7;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        main {
+            padding: 20px;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 600px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .checklist li {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        label {
+            flex: 1;
+            cursor: pointer;
+        }
+        input[type="checkbox"] {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Checklist des Documents pour Visa</h1>
+    </header>
+    <main>
+        <ul class="checklist" id="checklist">
+            <!-- Checklist items will be dynamically added here -->
+        </ul>
+    </main>
+    <script>
+        const checklistData = [
+            "Réservation d'un billet aller-retour (avion, autobus ou bateau)",
+            "Preuve d'hébergement : réservation d'hôtel ou autre",
+            "Relevés bancaires pour les 3 derniers mois",
+            "Attestation d'emploi (pour salariés)",
+            "Attestation de pension (pour retraités)",
+            "Carte professionnelle ou attestation de l'ordre (pour professions réglementées)",
+            "Certificat de scolarité ou carte étudiant",
+            "Engagement de prise en charge (pour mineurs ou sans emploi)"
+        ];
+
+        const checklist = document.getElementById('checklist');
+
+        // Load saved data
+        const savedState = JSON.parse(localStorage.getItem('checklistState')) || {};
+
+        // Render checklist
+        checklistData.forEach((item, index) => {
+            const li = document.createElement('li');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `item-${index}`;
+            checkbox.checked = savedState[`item-${index}`] || false;
+
+            checkbox.addEventListener('change', () => {
+                savedState[`item-${index}`] = checkbox.checked;
+                localStorage.setItem('checklistState', JSON.stringify(savedState));
+            });
+
+            const label = document.createElement('label');
+            label.setAttribute('for', `item-${index}`);
+            label.textContent = item;
+
+            li.appendChild(checkbox);
+            li.appendChild(label);
+            checklist.appendChild(li);
+        });
+    </script>
+</body>
+</html>
