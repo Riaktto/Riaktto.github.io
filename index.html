@@ -1,99 +1,178 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Visa Maroc</title>
+    <title>Checklist Visa France-Maroc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f4f4f4;
+            background-color: #f8f9fa;
         }
-        header {
-            background: #0078D7;
+        .checklist-header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #007bff;
             color: white;
-            text-align: center;
-            padding: 1rem 0;
+            border-radius: 5px;
         }
-        main {
-            padding: 20px;
-        }
-        .checklist {
-            list-style: none;
-            padding: 0;
-            margin: 0 auto;
-            max-width: 600px;
-            background: white;
-            border-radius: 8px;
+        .checklist-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
         }
-        .checklist li {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
+        .checklist-item .form-check-label {
+            font-weight: bold;
         }
-        .checklist li:last-child {
-            border-bottom: none;
+        .sub-items {
+            padding-left: 20px;
+            margin-top: 10px;
         }
-        label {
-            flex: 1;
-            cursor: pointer;
-        }
-        input[type="checkbox"] {
-            margin-right: 15px;
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Checklist des Documents pour Visa</h1>
-    </header>
-    <main>
-        <ul class="checklist" id="checklist">
-            <!-- Checklist items will be dynamically added here -->
-        </ul>
-    </main>
+    <div class="container my-4">
+        <div class="checklist-header text-center">
+            <h1>Checklist Visa France-Maroc</h1>
+            <p>Gardez une trace des documents requis</p>
+        </div>
+
+        <div id="checklist-container">
+            <!-- Items will be dynamically generated here -->
+        </div>
+
+        <div class="footer">
+            &copy; 2024 - Checklist interactive pour Visa France-Maroc
+        </div>
+    </div>
+
     <script>
+        // Données de la checklist
         const checklistData = [
-            "Réservation d'un billet aller-retour (avion, autobus ou bateau)",
-            "Preuve d'hébergement : réservation d'hôtel ou autre",
-            "Relevés bancaires pour les 3 derniers mois",
-            "Attestation d'emploi (pour salariés)",
-            "Attestation de pension (pour retraités)",
-            "Carte professionnelle ou attestation de l'ordre (pour professions réglementées)",
-            "Certificat de scolarité ou carte étudiant",
-            "Engagement de prise en charge (pour mineurs ou sans emploi)"
+            {
+                item: "Preuve du moyen de transport",
+                subItems: [
+                    "Réservation d'un billet aller-retour (avion, bus ou bateau)"
+                ]
+            },
+            {
+                item: "Preuve d'hébergement",
+                subItems: [
+                    "Réservation(s) d'hôtel",
+                    "Preuve de location ou propriété immobilière",
+                    "Confirmation d'hébergement chez un particulier",
+                    "Preuve de moyens financiers suffisants"
+                ]
+            },
+            {
+                item: "Preuve des moyens de subsistance",
+                subItems: [
+                    "Relevé bancaire des 3 derniers mois",
+                    "Prise en charge par un particulier ou organisation",
+                    "Justificatif des ressources financières disponibles"
+                ]
+            },
+            {
+                item: "Preuve de stabilité socio-économique",
+                subItems: [
+                    "Attestation d'emploi ou statut professionnel",
+                    "Relevés bancaires personnels et professionnels",
+                    "Documents de propriété (immobiliers, terrains)"
+                ]
+            }
         ];
 
-        const checklist = document.getElementById('checklist');
+        const checklistContainer = document.getElementById('checklist-container');
 
-        // Load saved data
-        const savedState = JSON.parse(localStorage.getItem('checklistState')) || {};
+        // Charger le statut des cases depuis le stockage local
+        const loadChecklistStatus = () => {
+            return JSON.parse(localStorage.getItem('checklistStatus')) || {};
+        };
 
-        // Render checklist
+        // Sauvegarder le statut des cases dans le stockage local
+        const saveChecklistStatus = (status) => {
+            localStorage.setItem('checklistStatus', JSON.stringify(status));
+        };
+
+        const checklistStatus = loadChecklistStatus();
+
+        // Générer la checklist
         checklistData.forEach((item, index) => {
-            const li = document.createElement('li');
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = `item-${index}`;
-            checkbox.checked = savedState[`item-${index}`] || false;
+            const card = document.createElement('div');
+            card.className = 'checklist-item';
 
-            checkbox.addEventListener('change', () => {
-                savedState[`item-${index}`] = checkbox.checked;
-                localStorage.setItem('checklistState', JSON.stringify(savedState));
+            // Élément principal
+            const mainCheck = document.createElement('div');
+            mainCheck.className = 'form-check';
+
+            const mainInput = document.createElement('input');
+            mainInput.type = 'checkbox';
+            mainInput.className = 'form-check-input';
+            mainInput.id = `item-${index}`;
+            mainInput.checked = checklistStatus[`item-${index}`] || false;
+
+            const mainLabel = document.createElement('label');
+            mainLabel.className = 'form-check-label';
+            mainLabel.htmlFor = `item-${index}`;
+            mainLabel.textContent = item.item;
+
+            mainCheck.appendChild(mainInput);
+            mainCheck.appendChild(mainLabel);
+            card.appendChild(mainCheck);
+
+            // Sous-éléments
+            if (item.subItems && item.subItems.length > 0) {
+                const subItemsContainer = document.createElement('div');
+                subItemsContainer.className = 'sub-items';
+
+                item.subItems.forEach((subItem, subIndex) => {
+                    const subCheck = document.createElement('div');
+                    subCheck.className = 'form-check';
+
+                    const subInput = document.createElement('input');
+                    subInput.type = 'checkbox';
+                    subInput.className = 'form-check-input';
+                    subInput.id = `item-${index}-sub-${subIndex}`;
+                    subInput.checked = checklistStatus[`item-${index}-sub-${subIndex}`] || false;
+
+                    const subLabel = document.createElement('label');
+                    subLabel.className = 'form-check-label';
+                    subLabel.htmlFor = `item-${index}-sub-${subIndex}`;
+                    subLabel.textContent = subItem;
+
+                    subCheck.appendChild(subInput);
+                    subCheck.appendChild(subLabel);
+                    subItemsContainer.appendChild(subCheck);
+                });
+
+                card.appendChild(subItemsContainer);
+            }
+
+            checklistContainer.appendChild(card);
+
+            // Écouter les changements et sauvegarder le statut
+            mainInput.addEventListener('change', () => {
+                checklistStatus[`item-${index}`] = mainInput.checked;
+                saveChecklistStatus(checklistStatus);
             });
 
-            const label = document.createElement('label');
-            label.setAttribute('for', `item-${index}`);
-            label.textContent = item;
-
-            li.appendChild(checkbox);
-            li.appendChild(label);
-            checklist.appendChild(li);
+            if (item.subItems) {
+                item.subItems.forEach((_, subIndex) => {
+                    const subInput = document.getElementById(`item-${index}-sub-${subIndex}`);
+                    subInput.addEventListener('change', () => {
+                        checklistStatus[`item-${index}-sub-${subIndex}`] = subInput.checked;
+                        saveChecklistStatus(checklistStatus);
+                    });
+                });
+            }
         });
     </script>
 </body>
